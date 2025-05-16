@@ -26,6 +26,10 @@ mongoose
 const app = express();
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.send('👋 Welcome to the Node.js Live Chat Backend');
+});
+
 const server = http.createServer(app);
 const io = new Server(server, {
   transports: ['websocket', 'polling'],
