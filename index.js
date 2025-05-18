@@ -9,6 +9,7 @@ const mongoose   = require('mongoose');
 
 const chatHandler      = require('./socket/chat');
 const signalingHandler = require('./socket/signaling');
+const { fetchTwilioIce } = require('./utils/twilioIce');
 
 /* ---------- MongoDB ---------- */
 mongoose
@@ -29,6 +30,21 @@ app.use(cors());
 app.get('/', (req, res) => {
   res.send('👋 Welcome to the Node.js Live Chat Backend');
 });
+
+app.get('/get-ice', async (req, res) => {
+  res.json(await getTwilioIce());
+});
+
+app.get('/api/ice', async (req, res) => {
+  try {
+    const ice = await fetchTwilioIce();
+    res.json(ice);
+  } catch (err) {
+    console.error('❌ ICE fetch error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch ICE servers' });
+  }
+});
+
 
 const server = http.createServer(app);
 const io = new Server(server, {
